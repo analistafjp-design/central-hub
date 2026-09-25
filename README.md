@@ -60,6 +60,17 @@ validação linha a linha e detecção de duplicidade (por usuário/nome já
 cadastrado no servidor). Linhas com erro ou duplicadas são ignoradas e
 reportadas; o cadastro manual continua disponível normalmente.
 
+### Financeiro
+Tela **Financeiro** para registrar pagamentos/renovações (valor, quantos
+meses foram ativados, data, observações), com cards de receita do mês,
+quantidade de pagamentos, ticket médio e receita do ano. O valor sugerido
+usa a mensalidade cadastrada do cliente × meses ativados (ou R$30/mês como
+referência quando o cliente não tem mensalidade definida). Ao registrar,
+opcionalmente já renova o cliente: estende a data de expiração pelos meses
+pagos e marca como Ativo. Também pode ser registrado direto pela linha do
+cliente, em Clientes ou no dashboard de cada servidor ("Registrar
+pagamento"), sem precisar abrir a tela Financeiro.
+
 ### Alertas automáticos
 A função `atualizar_status_clientes()` (banco de dados) marca clientes
 vencidos e gera alertas 30/15/7/3/1 dias antes do vencimento, no dia e após
@@ -67,8 +78,6 @@ o vencimento. Schema e função já implementados — tela de central de alertas
 é a próxima etapa do roadmap.
 
 ### Módulos com schema pronto (telas em etapas futuras)
-- **Gestão Financeira** (receita por servidor/cliente, ticket médio,
-  projeções — tabela `pagamentos` já modelada)
 - **Controle de Créditos** (compras/usos por servidor — tabela `creditos`
   já modelada e já contabilizada nos dashboards)
 - **Alertas Inteligentes / Integração com WhatsApp** (tabela `alertas` já
@@ -79,11 +88,11 @@ o vencimento. Schema e função já implementados — tela de central de alertas
 
 Este repositório está na fase de **scaffold funcional**: a base técnica
 (build, Supabase, autenticação, layout, navegação) e os módulos de
-**Dashboard**, **Servidores**, **Clientes** e **Importação de Dados** estão
-implementados de ponta a ponta (UI + hooks + services + banco de dados +
-RLS). Os demais módulos do escopo do produto já têm o schema de banco pronto
-(ver [supabase/README.md](./supabase/README.md)) e entram como próximas
-etapas.
+**Dashboard**, **Servidores**, **Clientes**, **Importação de Dados** e
+**Financeiro** estão implementados de ponta a ponta (UI + hooks + services +
+banco de dados + RLS). Os demais módulos do escopo do produto já têm o
+schema de banco pronto (ver [supabase/README.md](./supabase/README.md)) e
+entram como próximas etapas.
 
 ---
 
@@ -114,16 +123,18 @@ src/
 │   ├── shared/         # PageHeader, StatCard, EmptyState, ConfirmDialog, StatusBadge
 │   ├── dashboard/      # Gráficos e widgets do dashboard executivo
 │   ├── servidores/     # ServidorForm, ServidorCard
-│   └── clientes/       # ClienteForm, ClienteTable, ClienteFilters
+│   ├── clientes/       # ClienteForm, ClienteTable, ClienteFilters, ImportarClientesDialog
+│   └── pagamentos/     # PagamentoForm, PagamentoTable
 ├── pages/
 │   ├── auth/           # Login, cadastro, recuperação/redefinição de senha
 │   ├── DashboardPage.tsx
 │   ├── ServidoresPage.tsx
 │   ├── ServidorDetailPage.tsx
 │   ├── ClientesPage.tsx
+│   ├── FinanceiroPage.tsx
 │   └── ProfilePage.tsx
-├── hooks/               # useServidores, useClientes, useDashboard, ...
-├── services/            # Chamadas ao Supabase (servidoresService, clientesService, ...)
+├── hooks/               # useServidores, useClientes, useDashboard, usePagamentos, ...
+├── services/            # Chamadas ao Supabase (servidoresService, clientesService, pagamentosService, ...)
 ├── integrations/
 │   └── supabase/        # client.ts e types.ts (schema do banco)
 ├── contexts/            # AuthContext
@@ -200,7 +211,7 @@ O primeiro usuário que se cadastrar em `/cadastro` vira automaticamente
 - [x] Gestão de Servidores
 - [x] Gestão de Clientes
 - [x] Importação de dados (Excel/CSV)
-- [ ] Gestão financeira detalhada (histórico de pagamentos)
+- [x] Financeiro (registro de pagamentos/renovações, receita do mês/ano)
 - [ ] Controle de créditos (tela dedicada)
 - [ ] Central de alertas + integração com WhatsApp
 - [ ] Insights inteligentes
