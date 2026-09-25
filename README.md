@@ -51,6 +51,15 @@ Cadastro manual de clientes com nome, usuário, senha, telefone, plano, valor
 mensal, servidor, observações, data de cadastro, data de expiração e status
 (Ativo / Vencido / Cancelado). Busca e filtros por servidor e status.
 
+### Importação de Dados
+Botão **Importar planilha** (na tela de Clientes e no dashboard de cada
+servidor) para subir arquivos `.xlsx` ou `.csv` exportados de painéis como
+WPlay, UniTV ou TVS/P2P. Fluxo em 3 passos: upload → mapeamento de colunas
+(com detecção automática por nomes comuns de coluna) → pré-visualização com
+validação linha a linha e detecção de duplicidade (por usuário/nome já
+cadastrado no servidor). Linhas com erro ou duplicadas são ignoradas e
+reportadas; o cadastro manual continua disponível normalmente.
+
 ### Alertas automáticos
 A função `atualizar_status_clientes()` (banco de dados) marca clientes
 vencidos e gera alertas 30/15/7/3/1 dias antes do vencimento, no dia e após
@@ -58,8 +67,6 @@ o vencimento. Schema e função já implementados — tela de central de alertas
 é a próxima etapa do roadmap.
 
 ### Módulos com schema pronto (telas em etapas futuras)
-- **Importação de Dados** (Excel/CSV, mapeamento de colunas, detecção de
-  duplicidades)
 - **Gestão Financeira** (receita por servidor/cliente, ticket médio,
   projeções — tabela `pagamentos` já modelada)
 - **Controle de Créditos** (compras/usos por servidor — tabela `creditos`
@@ -72,10 +79,11 @@ o vencimento. Schema e função já implementados — tela de central de alertas
 
 Este repositório está na fase de **scaffold funcional**: a base técnica
 (build, Supabase, autenticação, layout, navegação) e os módulos de
-**Dashboard**, **Servidores** e **Clientes** estão implementados de ponta a
-ponta (UI + hooks + services + banco de dados + RLS). Os demais módulos do
-escopo do produto já têm o schema de banco pronto (ver
-[supabase/README.md](./supabase/README.md)) e entram como próximas etapas.
+**Dashboard**, **Servidores**, **Clientes** e **Importação de Dados** estão
+implementados de ponta a ponta (UI + hooks + services + banco de dados +
+RLS). Os demais módulos do escopo do produto já têm o schema de banco pronto
+(ver [supabase/README.md](./supabase/README.md)) e entram como próximas
+etapas.
 
 ---
 
@@ -174,6 +182,7 @@ O primeiro usuário que se cadastrar em `/cadastro` vira automaticamente
 - Tailwind CSS + shadcn/ui (Radix UI)
 - React Router, React Hook Form + Zod
 - Recharts
+- ExcelJS (leitura de planilhas .xlsx na importação, carregado sob demanda)
 
 ### Backend
 - Supabase (PostgreSQL, Authentication, Row Level Security, Storage, Edge
@@ -190,7 +199,7 @@ O primeiro usuário que se cadastrar em `/cadastro` vira automaticamente
 - [x] Dashboard executivo
 - [x] Gestão de Servidores
 - [x] Gestão de Clientes
-- [ ] Importação de dados (Excel/CSV)
+- [x] Importação de dados (Excel/CSV)
 - [ ] Gestão financeira detalhada (histórico de pagamentos)
 - [ ] Controle de créditos (tela dedicada)
 - [ ] Central de alertas + integração com WhatsApp

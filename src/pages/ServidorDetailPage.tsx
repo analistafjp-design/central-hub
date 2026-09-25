@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Plus, Users, UserCheck, UserX, Wallet, Coins } from "lucide-react";
+import { ArrowLeft, Plus, Upload, Users, UserCheck, UserX, Wallet, Coins } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -11,6 +11,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { ClienteFilters } from "@/components/clientes/ClienteFilters";
 import { ClienteTable } from "@/components/clientes/ClienteTable";
 import { ClienteForm } from "@/components/clientes/ClienteForm";
+import { ImportarClientesDialog } from "@/components/clientes/ImportarClientesDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useServidorResumo } from "@/hooks/useServidoresResumo";
 import { useClientes } from "@/hooks/useClientes";
@@ -35,9 +36,10 @@ export default function ServidorDetailPage() {
     [id, buscaDebounced, status],
   );
 
-  const { clientes, loading, criar, atualizar, excluir } = useClientes(filtros);
+  const { clientes, loading, criar, atualizar, excluir, recarregar } = useClientes(filtros);
 
   const [dialogAberto, setDialogAberto] = useState(false);
+  const [importarAberto, setImportarAberto] = useState(false);
   const [clienteEditando, setClienteEditando] = useState<ClienteComServidor | null>(null);
   const [clienteExcluindo, setClienteExcluindo] = useState<ClienteComServidor | null>(null);
   const [salvando, setSalvando] = useState(false);
@@ -116,10 +118,16 @@ export default function ServidorDetailPage() {
         title={loadingResumo ? "Carregando..." : (resumo?.nome ?? "Servidor")}
         description={resumo ? `Plataforma ${resumo.plataforma}` : undefined}
         actions={
-          <Button onClick={abrirNovo}>
-            <Plus className="h-4 w-4" />
-            Novo cliente
-          </Button>
+          <>
+            <Button variant="outline" onClick={() => setImportarAberto(true)}>
+              <Upload className="h-4 w-4" />
+              Importar planilha
+            </Button>
+            <Button onClick={abrirNovo}>
+              <Plus className="h-4 w-4" />
+              Novo cliente
+            </Button>
+          </>
         }
       />
 
@@ -193,6 +201,17 @@ export default function ServidorDetailPage() {
         destructive
         loading={excluindo}
         onConfirm={handleExcluir}
+      />
+
+      <ImportarClientesDialog
+        open={importarAberto}
+        onOpenChange={setImportarAberto}
+        servidores={servidorParaForm}
+        servidorIdFixo={id}
+        onImportado={async () => {
+          await recarregar();
+          await recarregarResumo();
+        }}
       />
     </div>
   );

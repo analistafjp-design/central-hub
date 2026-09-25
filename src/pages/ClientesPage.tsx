@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -10,6 +10,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { ClienteFilters } from "@/components/clientes/ClienteFilters";
 import { ClienteTable } from "@/components/clientes/ClienteTable";
 import { ClienteForm } from "@/components/clientes/ClienteForm";
+import { ImportarClientesDialog } from "@/components/clientes/ImportarClientesDialog";
 import { useClientes } from "@/hooks/useClientes";
 import { useServidores } from "@/hooks/useServidores";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -34,10 +35,11 @@ export default function ClientesPage() {
     [buscaDebounced, status, servidorId],
   );
 
-  const { clientes, loading, criar, atualizar, excluir } = useClientes(filtros);
+  const { clientes, loading, criar, atualizar, excluir, recarregar } = useClientes(filtros);
   const { servidores } = useServidores();
 
   const [dialogAberto, setDialogAberto] = useState(false);
+  const [importarAberto, setImportarAberto] = useState(false);
   const [clienteEditando, setClienteEditando] = useState<ClienteComServidor | null>(null);
   const [clienteExcluindo, setClienteExcluindo] = useState<ClienteComServidor | null>(null);
   const [salvando, setSalvando] = useState(false);
@@ -91,10 +93,20 @@ export default function ClientesPage() {
         title="Clientes"
         description="Gerencie os clientes cadastrados em todos os servidores."
         actions={
-          <Button onClick={abrirNovo} disabled={servidores.length === 0}>
-            <Plus className="h-4 w-4" />
-            Novo cliente
-          </Button>
+          <>
+            <Button
+              variant="outline"
+              onClick={() => setImportarAberto(true)}
+              disabled={servidores.length === 0}
+            >
+              <Upload className="h-4 w-4" />
+              Importar planilha
+            </Button>
+            <Button onClick={abrirNovo} disabled={servidores.length === 0}>
+              <Plus className="h-4 w-4" />
+              Novo cliente
+            </Button>
+          </>
         }
       />
 
@@ -139,6 +151,13 @@ export default function ClientesPage() {
         destructive
         loading={excluindo}
         onConfirm={handleExcluir}
+      />
+
+      <ImportarClientesDialog
+        open={importarAberto}
+        onOpenChange={setImportarAberto}
+        servidores={servidores}
+        onImportado={recarregar}
       />
     </div>
   );
