@@ -1,0 +1,210 @@
+# Central Hub
+
+> Sua operação em um único lugar.
+
+## Visão Geral
+
+O Central Hub é uma plataforma de gestão desenvolvida para centralizar informações operacionais, comerciais e financeiras de múltiplos servidores em um único painel.
+
+A solução permite acompanhar clientes, assinaturas, vencimentos, créditos, receitas e indicadores estratégicos através de dashboards inteligentes e relatórios detalhados.
+
+O objetivo é substituir controles manuais, planilhas dispersas e múltiplos sistemas por uma plataforma moderna, organizada e escalável.
+
+---
+
+## Principais Funcionalidades
+
+### Dashboard Executivo
+
+- Total de clientes
+- Clientes ativos
+- Clientes vencidos
+- Clientes vencendo
+- Receita mensal
+- Receita total
+- Créditos disponíveis
+- Novos clientes
+- Taxa de renovação
+- Taxa de retenção
+
+---
+
+### Gestão de Servidores
+
+Suporte para:
+
+- WPLAY
+- UNITV
+- TVS
+- P2BRAZ
+
+Cada servidor possui:
+
+- Dashboard próprio
+- Controle de clientes
+- Receita individual
+- Controle de créditos
+- Histórico financeiro
+
+---
+
+### Gestão de Clientes
+
+Cadastro manual de clientes.
+
+Campos:
+
+- Nome
+- Usuário
+- Senha
+- Telefone
+- Plano
+- Valor mensal
+- Servidor
+- Observações
+- Data de cadastro
+- Data de expiração
+- Status
+
+---
+
+### Importação de Dados
+
+Importação por:
+
+- Excel (.xlsx)
+- CSV
+
+Recursos:
+
+- Mapeamento de colunas
+- Pré-visualização
+- Validação de dados
+- Detecção de duplicidades
+
+---
+
+### Gestão Financeira
+
+Controle completo de:
+
+- Receita mensal
+- Receita anual
+- Receita total
+- Receita por servidor
+- Receita por cliente
+- Ticket médio
+- Projeções financeiras
+
+---
+
+### Controle de Créditos
+
+Monitoramento de:
+
+- Créditos comprados
+- Créditos utilizados
+- Créditos disponíveis
+- Valor investido
+- Consumo médio
+- Previsão de esgotamento
+
+---
+
+### Alertas Inteligentes
+
+Notificações automáticas:
+
+- 30 dias antes
+- 15 dias antes
+- 7 dias antes
+- 3 dias antes
+- 1 dia antes
+- No vencimento
+- Após o vencimento
+
+---
+
+### Integração com WhatsApp
+
+Envio rápido de mensagens para:
+
+- Renovação
+- Cobrança
+- Aviso de vencimento
+- Comunicação com clientes
+
+---
+
+### Insights Inteligentes
+
+O sistema analisa automaticamente os dados e exibe informações como:
+
+- Clientes próximos do vencimento
+- Crescimento mensal
+- Receita por servidor
+- Taxa de renovação
+- Oportunidades de recuperação
+- Tendências de crescimento
+
+---
+
+### Radar de Crescimento
+
+Módulo exclusivo para análise estratégica.
+
+Indicadores:
+
+- Clientes ganhos
+- Clientes perdidos
+- Receita recuperada
+- Receita perdida
+- Melhor servidor
+- Meta mensal
+- Projeção dos próximos meses
+
+---
+
+## Tecnologias
+
+### Frontend
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Shadcn UI
+
+### Backend
+
+- Supabase
+- PostgreSQL
+- Authentication
+- Storage
+- Edge Functions
+
+### Aplicação
+
+- PWA
+- Mobile First
+- Android
+- iOS
+
+---
+
+## Estrutura do Projeto
+
+```bash
+src/
+├── components/
+├── pages/
+├── hooks/
+├── services/
+├── integrations/
+├── contexts/
+├── layouts/
+├── routes/
+├── types/
+├── lib/
+├── assets/
+└── utils/
