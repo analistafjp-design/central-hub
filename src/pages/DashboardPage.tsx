@@ -1,7 +1,9 @@
-import { Users, UserCheck, UserX, Clock, Wallet, TrendingUp, Coins, UserPlus } from "lucide-react";
+import { useMemo } from "react";
+import { Users, UserCheck, UserX, Clock, Wallet, TrendingUp, Coins, UserPlus, Receipt, CalendarRange } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatCard } from "@/components/shared/StatCard";
 import { useDashboard } from "@/hooks/useDashboard";
+import { usePagamentos, useResumoFinanceiro } from "@/hooks/usePagamentos";
 import { formatCurrency } from "@/utils/formatters";
 import { ClientesPorStatusChart } from "@/components/dashboard/ClientesPorStatusChart";
 import { ReceitaPorServidorChart } from "@/components/dashboard/ReceitaPorServidorChart";
@@ -9,10 +11,18 @@ import { NovosClientesPorMesChart } from "@/components/dashboard/NovosClientesPo
 import { ProximosVencimentos } from "@/components/dashboard/ProximosVencimentos";
 import { useAuth } from "@/contexts/AuthContext";
 
+function inicioDoAno() {
+  return `${new Date().getFullYear()}-01-01`;
+}
+
 export default function DashboardPage() {
   const { resumo, clientesPorStatus, receitaPorServidor, novosClientesPorMes, proximosVencimentos, loading } =
     useDashboard();
   const { profile } = useAuth();
+
+  const filtrosPagamentos = useMemo(() => ({ dataInicio: inicioDoAno() }), []);
+  const { pagamentos, loading: loadingPagamentos } = usePagamentos(filtrosPagamentos);
+  const resumoFinanceiro = useResumoFinanceiro(pagamentos);
 
   return (
     <div>
@@ -61,6 +71,19 @@ export default function DashboardPage() {
           icon={TrendingUp}
           tone="success"
           loading={loading}
+        />
+        <StatCard
+          title="Recebido no mês"
+          value={formatCurrency(resumoFinanceiro.receitaMes)}
+          icon={Receipt}
+          tone="success"
+          loading={loadingPagamentos}
+        />
+        <StatCard
+          title="Recebido no ano"
+          value={formatCurrency(resumoFinanceiro.receitaAno)}
+          icon={CalendarRange}
+          loading={loadingPagamentos}
         />
         <StatCard
           title="Créditos disponíveis"
