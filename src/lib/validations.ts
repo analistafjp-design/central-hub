@@ -64,3 +64,18 @@ export const clienteSchema = z.object({
   status: z.enum(CLIENTE_STATUS),
 });
 export type ClienteFormValues = z.infer<typeof clienteSchema>;
+
+export const pagamentoSchema = z.object({
+  cliente_id: z.string().min(1, "Selecione um cliente."),
+  valor: z
+    .number({ invalid_type_error: "Informe um valor válido." })
+    .positive("O valor deve ser maior que zero."),
+  meses: z
+    .number({ invalid_type_error: "Informe quantos meses foram ativados." })
+    .int("Informe um número inteiro de meses.")
+    .min(1, "No mínimo 1 mês."),
+  data_pagamento: z.string().min(1, "Informe a data do pagamento."),
+  observacoes: z.string().optional(),
+  renovarCliente: z.boolean(),
+});
+export type PagamentoFormValues = z.infer<typeof pagamentoSchema>;

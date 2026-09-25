@@ -24,9 +24,16 @@ export type ServidorInsert = Database["public"]["Tables"]["servidores"]["Insert"
 export type ServidorUpdate = Database["public"]["Tables"]["servidores"]["Update"];
 export type ClienteInsert = Database["public"]["Tables"]["clientes"]["Insert"];
 export type ClienteUpdate = Database["public"]["Tables"]["clientes"]["Update"];
+export type PagamentoInsert = Database["public"]["Tables"]["pagamentos"]["Insert"];
+export type PagamentoUpdate = Database["public"]["Tables"]["pagamentos"]["Update"];
 
 export interface ClienteComServidor extends Cliente {
   servidor?: Pick<Servidor, "id" | "nome" | "plataforma"> | null;
+}
+
+export interface PagamentoComRelacoes extends Pagamento {
+  cliente?: Pick<Cliente, "id" | "nome"> | null;
+  servidor?: Pick<Servidor, "id" | "nome"> | null;
 }
 
 export interface ClienteFiltros {
@@ -38,4 +45,11 @@ export interface ClienteFiltros {
 export interface ServidorFiltros {
   busca?: string;
   apenasAtivos?: boolean;
+}
+
+export interface PagamentoFiltros {
+  servidorId?: string;
+  clienteId?: string;
+  dataInicio?: string;
+  dataFim?: string;
 }

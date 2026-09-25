@@ -119,6 +119,13 @@ export interface Database {
             referencedRelation: "servidores";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "creditos_cliente_id_fkey";
+            columns: ["cliente_id"];
+            isOneToOne: false;
+            referencedRelation: "clientes";
+            referencedColumns: ["id"];
+          },
         ];
       };
       pagamentos: {
@@ -147,6 +154,13 @@ export interface Database {
             referencedRelation: "clientes";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "pagamentos_servidor_id_fkey";
+            columns: ["servidor_id"];
+            isOneToOne: false;
+            referencedRelation: "servidores";
+            referencedColumns: ["id"];
+          },
         ];
       };
       alertas: {
@@ -172,6 +186,13 @@ export interface Database {
             columns: ["cliente_id"];
             isOneToOne: false;
             referencedRelation: "clientes";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "alertas_servidor_id_fkey";
+            columns: ["servidor_id"];
+            isOneToOne: false;
+            referencedRelation: "servidores";
             referencedColumns: ["id"];
           },
         ];

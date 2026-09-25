@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Trash2, Phone, Server } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, Phone, Server, Wallet } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -26,10 +26,18 @@ interface ClienteTableProps {
   loading: boolean;
   onEdit: (cliente: ClienteComServidor) => void;
   onDelete: (cliente: ClienteComServidor) => void;
+  onRegistrarPagamento?: (cliente: ClienteComServidor) => void;
   hideServidorColumn?: boolean;
 }
 
-export function ClienteTable({ clientes, loading, onEdit, onDelete, hideServidorColumn }: ClienteTableProps) {
+export function ClienteTable({
+  clientes,
+  loading,
+  onEdit,
+  onDelete,
+  onRegistrarPagamento,
+  hideServidorColumn,
+}: ClienteTableProps) {
   if (loading) {
     return (
       <div className="space-y-2">
@@ -98,6 +106,11 @@ export function ClienteTable({ clientes, loading, onEdit, onDelete, hideServidor
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    {onRegistrarPagamento && (
+                      <DropdownMenuItem onClick={() => onRegistrarPagamento(cliente)}>
+                        <Wallet className="mr-2 h-4 w-4" /> Registrar pagamento
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => onEdit(cliente)}>
                       <Pencil className="mr-2 h-4 w-4" /> Editar
                     </DropdownMenuItem>

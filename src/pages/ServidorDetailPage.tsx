@@ -12,14 +12,16 @@ import { ClienteFilters } from "@/components/clientes/ClienteFilters";
 import { ClienteTable } from "@/components/clientes/ClienteTable";
 import { ClienteForm } from "@/components/clientes/ClienteForm";
 import { ImportarClientesDialog } from "@/components/clientes/ImportarClientesDialog";
+import { PagamentoForm } from "@/components/pagamentos/PagamentoForm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useServidorResumo } from "@/hooks/useServidoresResumo";
 import { useClientes } from "@/hooks/useClientes";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useRegistrarPagamento } from "@/hooks/useRegistrarPagamento";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatCurrency } from "@/utils/formatters";
 import type { ClienteComServidor, Servidor } from "@/types";
-import type { ClienteFormValues } from "@/lib/validations";
+import type { ClienteFormValues, PagamentoFormValues } from "@/lib/validations";
 
 export default function ServidorDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -42,8 +44,10 @@ export default function ServidorDetailPage() {
   const [importarAberto, setImportarAberto] = useState(false);
   const [clienteEditando, setClienteEditando] = useState<ClienteComServidor | null>(null);
   const [clienteExcluindo, setClienteExcluindo] = useState<ClienteComServidor | null>(null);
+  const [clientePagando, setClientePagando] = useState<ClienteComServidor | null>(null);
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(false);
+  const { registrar, salvando: salvandoPagamento } = useRegistrarPagamento();
 
   const servidorParaForm: Servidor[] = useMemo(() => {
     if (!id || !resumo) return [];
@@ -89,6 +93,18 @@ export default function ServidorDetailPage() {
       toast.error(err instanceof Error ? err.message : "Erro ao salvar cliente.");
     } finally {
       setSalvando(false);
+    }
+  };
+
+  const handleSubmitPagamento = async (values: PagamentoFormValues) => {
+    if (!clientePagando) return;
+    try {
+      await registrar(values, clientePagando, user?.id);
+      await Promise.all([recarregar(), recarregarResumo()]);
+      toast.success("Pagamento registrado com sucesso.");
+      setClientePagando(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao registrar pagamento.");
     }
   };
 
@@ -172,6 +188,7 @@ export default function ServidorDetailPage() {
           loading={loading}
           onEdit={abrirEdicao}
           onDelete={setClienteExcluindo}
+          onRegistrarPagamento={setClientePagando}
           hideServidorColumn
         />
       </div>
@@ -213,6 +230,23 @@ export default function ServidorDetailPage() {
           await recarregarResumo();
         }}
       />
+
+      <Dialog open={!!clientePagando} onOpenChange={(open) => !open && setClientePagando(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registrar pagamento</DialogTitle>
+          </DialogHeader>
+          {clientePagando && (
+            <PagamentoForm
+              clientes={clientes}
+              clienteFixo={clientePagando}
+              onSubmit={handleSubmitPagamento}
+              onCancel={() => setClientePagando(null)}
+              submitting={salvandoPagamento}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
