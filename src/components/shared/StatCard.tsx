@@ -34,7 +34,11 @@ export function StatCard({ title, value, icon: Icon, tone = "default", loading }
           {loading ? (
             <div className="mt-1 h-6 w-20 animate-pulse rounded bg-muted" />
           ) : (
-            <p className="truncate text-lg font-bold text-foreground sm:text-xl">{value}</p>
+            // Sem truncate: um valor em R$ nunca deve ser cortado com "...".
+            // Se não couber numa linha só, quebra para a linha de baixo.
+            <p className="break-words text-lg font-bold leading-tight text-foreground sm:text-xl">
+              {value}
+            </p>
           )}
         </div>
       </CardContent>
