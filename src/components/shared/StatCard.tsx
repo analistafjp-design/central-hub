@@ -20,16 +20,21 @@ const toneClasses: Record<NonNullable<StatCardProps["tone"]>, string> = {
 export function StatCard({ title, value, icon: Icon, tone = "default", loading }: StatCardProps) {
   return (
     <Card>
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", toneClasses[tone])}>
-          <Icon className="h-6 w-6" />
+      <CardContent className="flex items-center gap-3 p-4 sm:gap-4 sm:p-5">
+        <div
+          className={cn(
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12",
+            toneClasses[tone],
+          )}
+        >
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="truncate text-xs font-medium text-muted-foreground sm:text-sm">{title}</p>
           {loading ? (
             <div className="mt-1 h-6 w-20 animate-pulse rounded bg-muted" />
           ) : (
-            <p className="truncate text-xl font-bold text-foreground">{value}</p>
+            <p className="truncate text-lg font-bold text-foreground sm:text-xl">{value}</p>
           )}
         </div>
       </CardContent>

@@ -175,7 +175,9 @@ export function ClienteForm({
         <Textarea id="observacoes" placeholder="Notas internas sobre este cliente" {...register("observacoes")} />
       </div>
 
-      <DialogFooter>
+      {/* sticky: com muitos campos, o formulário rola dentro de max-h-[70vh] — sem isso,
+          o botão de salvar ficaria escondido até rolar até o fim, principalmente no celular. */}
+      <DialogFooter className="sticky bottom-0 -mx-1 border-t border-border bg-background px-1 pb-1 pt-3">
         <Button type="button" variant="outline" onClick={onCancel} disabled={submitting}>
           Cancelar
         </Button>
