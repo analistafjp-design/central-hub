@@ -79,3 +79,17 @@ export const pagamentoSchema = z.object({
   renovarCliente: z.boolean(),
 });
 export type PagamentoFormValues = z.infer<typeof pagamentoSchema>;
+
+export const creditoSchema = z.object({
+  servidor_id: z.string().min(1, "Selecione um servidor."),
+  quantidade: z
+    .number({ invalid_type_error: "Informe a quantidade de créditos." })
+    .int("Informe um número inteiro.")
+    .positive("A quantidade deve ser maior que zero."),
+  valor: z
+    .number({ invalid_type_error: "Informe um valor válido." })
+    .positive("O valor deve ser maior que zero."),
+  data: z.string().min(1, "Informe a data da compra."),
+  observacoes: z.string().optional(),
+});
+export type CreditoFormValues = z.infer<typeof creditoSchema>;

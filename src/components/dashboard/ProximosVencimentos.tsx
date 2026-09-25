@@ -2,9 +2,16 @@ import { Link } from "react-router-dom";
 import { CalendarClock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { cn } from "@/lib/utils";
 import { formatCurrency, formatDate } from "@/utils/formatters";
-import { daysUntil } from "@/utils/status";
+import { getVencimentoInfo, type UrgenciaVencimento } from "@/utils/status";
 import type { ClienteComServidor } from "@/types";
+
+const CORES_TEXTO: Record<UrgenciaVencimento, string> = {
+  vencido: "text-red-600",
+  critico: "text-orange-600",
+  atencao: "text-amber-600",
+};
 
 export function ProximosVencimentos({ clientes }: { clientes: ClienteComServidor[] }) {
   return (
@@ -22,7 +29,7 @@ export function ProximosVencimentos({ clientes }: { clientes: ClienteComServidor
         ) : (
           <ul className="divide-y divide-border">
             {clientes.map((cliente) => {
-              const dias = daysUntil(cliente.data_expiracao);
+              const info = getVencimentoInfo(cliente.data_expiracao, cliente.status);
               return (
                 <li key={cliente.id} className="flex items-center justify-between gap-3 py-3">
                   <div className="min-w-0">
@@ -40,8 +47,8 @@ export function ProximosVencimentos({ clientes }: { clientes: ClienteComServidor
                     <p className="text-sm font-medium text-foreground">
                       {formatDate(cliente.data_expiracao)}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      {dias === 0 ? "vence hoje" : dias === 1 ? "vence amanhã" : `em ${dias} dias`}
+                    <p className={cn("text-xs font-medium", info ? CORES_TEXTO[info.nivel] : "text-muted-foreground")}>
+                      {info?.label ?? "-"}
                     </p>
                   </div>
                 </li>

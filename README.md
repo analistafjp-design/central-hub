@@ -61,26 +61,39 @@ cadastrado no servidor). Linhas com erro ou duplicadas são ignoradas e
 reportadas; o cadastro manual continua disponível normalmente.
 
 ### Financeiro
-Tela **Financeiro** para registrar pagamentos/renovações (valor, quantos
-meses foram ativados, data, observações), com cards de receita do mês,
-quantidade de pagamentos, ticket médio e receita do ano. O valor sugerido
-usa a mensalidade cadastrada do cliente × meses ativados (ou R$30/mês como
-referência quando o cliente não tem mensalidade definida). Ao registrar,
-opcionalmente já renova o cliente: estende a data de expiração pelos meses
-pagos e marca como Ativo. Também pode ser registrado direto pela linha do
-cliente, em Clientes ou no dashboard de cada servidor ("Registrar
-pagamento"), sem precisar abrir a tela Financeiro.
+Tela **Financeiro** com duas abas:
+- **Receitas**: registrar pagamentos/renovações (valor, quantos meses foram
+  ativados, data, observações), com cards de receita do mês, quantidade de
+  pagamentos e ticket médio. O valor sugerido usa a mensalidade cadastrada
+  do cliente × meses ativados (ou R$30/mês como referência quando o
+  cliente não tem mensalidade definida). Ao registrar, opcionalmente já
+  renova o cliente: estende a data de expiração pelos meses pagos e marca
+  como Ativo. Também pode ser registrado direto pela linha do cliente, em
+  Clientes, em Alertas ou no dashboard de cada servidor ("Registrar
+  pagamento"), sem precisar abrir a tela Financeiro.
+- **Gastos**: registrar compras de créditos (servidor, quantidade, valor
+  pago, data, observações) — usa a tabela `creditos` já modelada no banco.
 
-### Alertas automáticos
-A função `atualizar_status_clientes()` (banco de dados) marca clientes
-vencidos e gera alertas 30/15/7/3/1 dias antes do vencimento, no dia e após
-o vencimento. Schema e função já implementados — tela de central de alertas
-é a próxima etapa do roadmap.
+No topo da tela, cards de **Receita do mês**, **Gastos do mês**, **Lucro do
+mês** e **Lucro do ano** — os gastos com créditos são descontados
+automaticamente da receita recebida. O Dashboard também mostra "Recebido no
+mês/ano" e "Lucro no mês" com os mesmos dados.
+
+### Alertas de vencimento
+Tela **Alertas** listando clientes vencidos ou vencendo nos próximos 7 dias,
+do mais urgente para o menos urgente, com badge colorido (🔴 vencido, 🟠
+vence em até 3 dias, 🟡 vence em até 7 dias) e ação rápida para registrar o
+pagamento/renovação direto ali. O mesmo badge aparece na lista de Clientes e
+no widget "Próximos vencimentos" do Dashboard. Um sino no topo do app mostra
+a contagem de alertas urgentes (vencidos + vencendo em até 3 dias) e leva
+direto para a tela. Esse cálculo é feito a partir da data de expiração de
+cada cliente — a função `atualizar_status_clientes()` (banco de dados)
+também gera registros na tabela `alertas` para uso futuro (ex.: histórico,
+envio por WhatsApp), mas não é necessária para os alertas visuais
+funcionarem.
 
 ### Módulos com schema pronto (telas em etapas futuras)
-- **Controle de Créditos** (compras/usos por servidor — tabela `creditos`
-  já modelada e já contabilizada nos dashboards)
-- **Alertas Inteligentes / Integração com WhatsApp** (tabela `alertas` já
+- **Integração com WhatsApp** para envio dos alertas (tabela `alertas` já
   modelada e populada automaticamente pela função de status)
 - **Insights Inteligentes** e **Radar de Crescimento**
 
@@ -88,11 +101,12 @@ o vencimento. Schema e função já implementados — tela de central de alertas
 
 Este repositório está na fase de **scaffold funcional**: a base técnica
 (build, Supabase, autenticação, layout, navegação) e os módulos de
-**Dashboard**, **Servidores**, **Clientes**, **Importação de Dados** e
-**Financeiro** estão implementados de ponta a ponta (UI + hooks + services +
-banco de dados + RLS). Os demais módulos do escopo do produto já têm o
-schema de banco pronto (ver [supabase/README.md](./supabase/README.md)) e
-entram como próximas etapas.
+**Dashboard**, **Servidores**, **Clientes**, **Importação de Dados**,
+**Financeiro** (receitas e gastos) e **Alertas de vencimento** estão
+implementados de ponta a ponta (UI + hooks + services + banco de dados +
+RLS). Os demais módulos do escopo do produto já têm o schema de banco pronto
+(ver [supabase/README.md](./supabase/README.md)) e entram como próximas
+etapas.
 
 ---
 
@@ -124,17 +138,19 @@ src/
 │   ├── dashboard/      # Gráficos e widgets do dashboard executivo
 │   ├── servidores/     # ServidorForm, ServidorCard
 │   ├── clientes/       # ClienteForm, ClienteTable, ClienteFilters, ImportarClientesDialog
-│   └── pagamentos/     # PagamentoForm, PagamentoTable
+│   ├── pagamentos/     # PagamentoForm, PagamentoTable
+│   └── creditos/       # CreditoForm, CreditoTable (aba de Gastos)
 ├── pages/
 │   ├── auth/           # Login, cadastro, recuperação/redefinição de senha
 │   ├── DashboardPage.tsx
 │   ├── ServidoresPage.tsx
 │   ├── ServidorDetailPage.tsx
 │   ├── ClientesPage.tsx
+│   ├── AlertasPage.tsx
 │   ├── FinanceiroPage.tsx
 │   └── ProfilePage.tsx
-├── hooks/               # useServidores, useClientes, useDashboard, usePagamentos, ...
-├── services/            # Chamadas ao Supabase (servidoresService, clientesService, pagamentosService, ...)
+├── hooks/               # useServidores, useClientes, useDashboard, usePagamentos, useCreditos, useAlertas, ...
+├── services/            # Chamadas ao Supabase (servidoresService, clientesService, pagamentosService, creditosService, ...)
 ├── integrations/
 │   └── supabase/        # client.ts e types.ts (schema do banco)
 ├── contexts/            # AuthContext
@@ -211,8 +227,8 @@ O primeiro usuário que se cadastrar em `/cadastro` vira automaticamente
 - [x] Gestão de Servidores
 - [x] Gestão de Clientes
 - [x] Importação de dados (Excel/CSV)
-- [x] Financeiro (registro de pagamentos/renovações, receita do mês/ano)
-- [ ] Controle de créditos (tela dedicada)
-- [ ] Central de alertas + integração com WhatsApp
+- [x] Financeiro (receitas, gastos com créditos e lucro)
+- [x] Central de alertas de vencimento
+- [ ] Integração com WhatsApp para envio dos alertas
 - [ ] Insights inteligentes
 - [ ] Radar de crescimento

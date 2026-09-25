@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { LogOut, Menu, User as UserIcon } from "lucide-react";
+import { BellRing, LogOut, Menu, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,10 +18,12 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { initials } from "@/utils/formatters";
 import { APP_NAME } from "@/lib/constants";
+import { useAlertas } from "@/hooks/useAlertas";
 
 export function Topbar() {
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
+  const { contagem } = useAlertas();
 
   const handleSignOut = async () => {
     await signOut();
@@ -64,6 +67,24 @@ export function Topbar() {
       <div className="hidden lg:block" />
 
       <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative"
+          onClick={() => navigate("/alertas")}
+          aria-label="Alertas de vencimento"
+        >
+          <BellRing className="h-5 w-5" />
+          {contagem.urgentes > 0 && (
+            <Badge
+              variant="destructive"
+              className="absolute -right-1 -top-1 h-5 min-w-5 justify-center rounded-full px-1 text-[10px]"
+            >
+              {contagem.urgentes > 99 ? "99+" : contagem.urgentes}
+            </Badge>
+          )}
+        </Button>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 rounded-full pl-1 pr-2 transition-colors hover:bg-muted">

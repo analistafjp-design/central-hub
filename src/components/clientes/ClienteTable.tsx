@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ClienteStatusBadge } from "@/components/shared/StatusBadge";
+import { VencimentoBadge } from "@/components/shared/VencimentoBadge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Users } from "lucide-react";
@@ -96,7 +97,10 @@ export function ClienteTable({
               <TableCell className="hidden sm:table-cell">{formatCurrency(cliente.valor_mensal)}</TableCell>
               <TableCell className="hidden xl:table-cell">{formatDate(cliente.data_expiracao)}</TableCell>
               <TableCell>
-                <ClienteStatusBadge status={cliente.status} />
+                <div className="flex flex-col items-start gap-1">
+                  <ClienteStatusBadge status={cliente.status} />
+                  <VencimentoBadge dataExpiracao={cliente.data_expiracao} status={cliente.status} />
+                </div>
               </TableCell>
               <TableCell>
                 <DropdownMenu>

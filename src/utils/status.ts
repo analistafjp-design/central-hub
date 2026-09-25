@@ -1,4 +1,4 @@
-import { DIAS_VENCENDO_EM_BREVE } from "@/lib/constants";
+import { DIAS_VENCENDO_EM_BREVE, DIAS_VENCIMENTO_CRITICO } from "@/lib/constants";
 
 export function daysUntil(dateStr: string | null | undefined): number | null {
   if (!dateStr) return null;
@@ -13,6 +13,48 @@ export function daysUntil(dateStr: string | null | undefined): number | null {
 export function isVencendoEmBreve(dataExpiracao: string | null | undefined): boolean {
   const dias = daysUntil(dataExpiracao);
   return dias !== null && dias >= 0 && dias <= DIAS_VENCENDO_EM_BREVE;
+}
+
+export type UrgenciaVencimento = "vencido" | "critico" | "atencao";
+
+export interface VencimentoInfo {
+  nivel: UrgenciaVencimento;
+  dias: number;
+  label: string;
+}
+
+/**
+ * Classifica a urgência do vencimento de um cliente Ativo:
+ *   vencido  -> já passou da data (dias < 0)
+ *   critico  -> vence hoje ou em até DIAS_VENCIMENTO_CRITICO dias (laranja)
+ *   atencao  -> vence entre DIAS_VENCIMENTO_CRITICO e DIAS_VENCENDO_EM_BREVE dias (amarelo)
+ * Retorna null quando não há alerta a mostrar (mais de DIAS_VENCENDO_EM_BREVE
+ * dias de folga, ou o cliente não está Ativo).
+ */
+export function getVencimentoInfo(
+  dataExpiracao: string | null | undefined,
+  status: string | null | undefined,
+): VencimentoInfo | null {
+  if (status !== "Ativo") return null;
+  const dias = daysUntil(dataExpiracao);
+  if (dias === null || dias > DIAS_VENCENDO_EM_BREVE) return null;
+
+  if (dias < 0) {
+    const diasVencido = Math.abs(dias);
+    return {
+      nivel: "vencido",
+      dias,
+      label: diasVencido === 1 ? "Venceu há 1 dia" : `Venceu há ${diasVencido} dias`,
+    };
+  }
+
+  const label = dias === 0 ? "Vence hoje" : dias === 1 ? "Vence amanhã" : `Vence em ${dias} dias`;
+
+  return {
+    nivel: dias <= DIAS_VENCIMENTO_CRITICO ? "critico" : "atencao",
+    dias,
+    label,
+  };
 }
 
 /**
