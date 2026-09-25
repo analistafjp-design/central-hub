@@ -187,7 +187,7 @@ export function ImportarClientesDialog({
             </p>
             <div className="max-h-[50vh] space-y-3 overflow-y-auto pr-1">
               {IMPORT_FIELDS.map((def) => (
-                <div key={def.field} className="grid grid-cols-2 items-center gap-3">
+                <div key={def.field} className="grid grid-cols-1 gap-1.5 sm:grid-cols-[minmax(0,180px)_1fr] sm:items-center sm:gap-3">
                   <Label>
                     {def.label}
                     {def.required && <span className="text-destructive"> *</span>}
