@@ -21,3 +21,4 @@ export type AlertaStatusConst = (typeof ALERTA_STATUS)[number];
 
 export const DIAS_VENCENDO_EM_BREVE = 7;
 export const DIAS_VENCIMENTO_CRITICO = 3;
+export const CREDITOS_ALERTA_MINIMO = 5;

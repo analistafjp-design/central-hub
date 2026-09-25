@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MoreVertical, Pencil, Trash2, Users, Wallet } from "lucide-react";
+import { Coins, MoreVertical, Pencil, Trash2, Users, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CREDITOS_ALERTA_MINIMO } from "@/lib/constants";
 import { formatCurrency } from "@/utils/formatters";
 import type { Servidor, ServidorResumo } from "@/types";
 
@@ -30,11 +31,17 @@ export function ServidorCard({ servidor, resumo, onEdit, onDelete }: ServidorCar
           >
             {servidor.nome}
           </Link>
-          <div className="mt-1 flex items-center gap-2">
+          <div className="mt-1 flex flex-wrap items-center gap-2">
             <Badge variant="outline">{servidor.plataforma}</Badge>
             {!servidor.ativo && (
               <Badge variant="outline" className="border-slate-300 bg-slate-100 text-slate-600">
                 Inativo
+              </Badge>
+            )}
+            {servidor.ativo && resumo !== undefined && resumo.creditos_disponiveis < CREDITOS_ALERTA_MINIMO && (
+              <Badge variant="outline" className="border-orange-300 bg-orange-100 text-orange-700">
+                <Coins className="mr-1 h-3 w-3" />
+                Créditos baixos
               </Badge>
             )}
           </div>
@@ -67,9 +74,24 @@ export function ServidorCard({ servidor, resumo, onEdit, onDelete }: ServidorCar
             </span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
-            <Wallet className="h-4 w-4" />
-            <span className="truncate">
+            <Wallet className="h-4 w-4 shrink-0" />
+            <span className="whitespace-normal">
               <strong className="text-foreground">{formatCurrency(resumo?.receita_mensal ?? 0)}</strong>/mês
+            </span>
+          </div>
+          <div
+            className={
+              resumo !== undefined && resumo.creditos_disponiveis < CREDITOS_ALERTA_MINIMO
+                ? "flex items-center gap-2 text-orange-600"
+                : "flex items-center gap-2 text-muted-foreground"
+            }
+          >
+            <Coins className="h-4 w-4" />
+            <span>
+              <strong className={resumo !== undefined && resumo.creditos_disponiveis < CREDITOS_ALERTA_MINIMO ? "text-orange-700" : "text-foreground"}>
+                {resumo?.creditos_disponiveis ?? 0}
+              </strong>{" "}
+              créditos
             </span>
           </div>
         </div>
