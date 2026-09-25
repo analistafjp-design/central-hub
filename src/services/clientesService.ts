@@ -54,3 +54,32 @@ export async function excluirCliente(id: string): Promise<void> {
   const { error } = await supabase.from("clientes").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+/** Usados na importação para detectar duplicidades: usuário (ou nome, quando não há usuário) em minúsculas. */
+export async function buscarChavesExistentes(servidorId: string): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from("clientes")
+    .select("usuario, nome")
+    .eq("servidor_id", servidorId);
+  if (error) throw new Error(error.message);
+
+  const chaves = new Set<string>();
+  for (const registro of data ?? []) {
+    const chave = (registro.usuario || registro.nome || "").toLowerCase();
+    if (chave) chaves.add(chave);
+  }
+  return chaves;
+}
+
+const IMPORT_BATCH_SIZE = 200;
+
+export async function importarClientes(clientes: ClienteInsert[]): Promise<number> {
+  let inseridos = 0;
+  for (let i = 0; i < clientes.length; i += IMPORT_BATCH_SIZE) {
+    const lote = clientes.slice(i, i + IMPORT_BATCH_SIZE);
+    const { data, error } = await supabase.from("clientes").insert(lote).select("id");
+    if (error) throw new Error(error.message);
+    inseridos += data?.length ?? 0;
+  }
+  return inseridos;
+}
