@@ -91,7 +91,7 @@ export default function FinanceiroPage() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard title="Receita do mês" value={formatCurrency(resumo.receitaMes)} icon={Wallet} tone="success" />
         <StatCard title="Pagamentos no mês" value={String(resumo.pagamentosMes)} icon={Receipt} />
         <StatCard title="Ticket médio (mês)" value={formatCurrency(resumo.ticketMedioMes)} icon={TrendingUp} />

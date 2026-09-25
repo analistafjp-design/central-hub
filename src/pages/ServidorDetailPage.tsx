@@ -148,13 +148,13 @@ export default function ServidorDetailPage() {
       />
 
       {loadingResumo ? (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-24 w-full" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard title="Clientes" value={String(resumo?.clientes_total ?? 0)} icon={Users} />
           <StatCard title="Ativos" value={String(resumo?.clientes_ativos ?? 0)} icon={UserCheck} tone="success" />
           <StatCard title="Vencidos" value={String(resumo?.clientes_vencidos ?? 0)} icon={UserX} tone="danger" />
