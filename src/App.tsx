@@ -11,6 +11,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import ServidoresPage from "@/pages/ServidoresPage";
 import ServidorDetailPage from "@/pages/ServidorDetailPage";
 import ClientesPage from "@/pages/ClientesPage";
+import AlertasPage from "@/pages/AlertasPage";
 import FinanceiroPage from "@/pages/FinanceiroPage";
 import ProfilePage from "@/pages/ProfilePage";
 import NotFoundPage from "@/pages/NotFoundPage";
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/servidores" element={<ServidoresPage />} />
           <Route path="/servidores/:id" element={<ServidorDetailPage />} />
           <Route path="/clientes" element={<ClientesPage />} />
+          <Route path="/alertas" element={<AlertasPage />} />
           <Route path="/financeiro" element={<FinanceiroPage />} />
           <Route path="/perfil" element={<ProfilePage />} />
         </Route>

@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { DIAS_VENCENDO_EM_BREVE } from "@/lib/constants";
 import type { ClienteComServidor, ClienteFiltros, ClienteInsert, ClienteUpdate } from "@/types";
 
 export async function listarClientes(filtros: ClienteFiltros = {}): Promise<ClienteComServidor[]> {
@@ -53,6 +54,26 @@ export async function atualizarCliente(id: string, payload: ClienteUpdate): Prom
 export async function excluirCliente(id: string): Promise<void> {
   const { error } = await supabase.from("clientes").delete().eq("id", id);
   if (error) throw new Error(error.message);
+}
+
+/**
+ * Clientes que precisam de atenção: já vencidos (independentemente do
+ * status gravado — cobre o caso do status ainda não ter sido
+ * re-sincronizado) ou ativos vencendo dentro da janela de alerta.
+ */
+export async function listarClientesParaAlertas(): Promise<ClienteComServidor[]> {
+  const limite = new Date();
+  limite.setDate(limite.getDate() + DIAS_VENCENDO_EM_BREVE);
+  const limiteStr = limite.toISOString().slice(0, 10);
+
+  const { data, error } = await supabase
+    .from("clientes")
+    .select("*, servidor:servidores(id, nome, plataforma)")
+    .or(`status.eq.Vencido,and(status.eq.Ativo,data_expiracao.lte.${limiteStr})`)
+    .order("data_expiracao", { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return (data as ClienteComServidor[]) ?? [];
 }
 
 /** Usados na importação para detectar duplicidades: usuário (ou nome, quando não há usuário) em minúsculas. */

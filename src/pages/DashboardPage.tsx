@@ -1,9 +1,22 @@
 import { useMemo } from "react";
-import { Users, UserCheck, UserX, Clock, Wallet, TrendingUp, Coins, UserPlus, Receipt, CalendarRange } from "lucide-react";
+import {
+  Users,
+  UserCheck,
+  UserX,
+  Clock,
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  Coins,
+  UserPlus,
+  Receipt,
+  CalendarRange,
+} from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatCard } from "@/components/shared/StatCard";
 import { useDashboard } from "@/hooks/useDashboard";
 import { usePagamentos, useResumoFinanceiro } from "@/hooks/usePagamentos";
+import { useCreditos } from "@/hooks/useCreditos";
 import { formatCurrency } from "@/utils/formatters";
 import { ClientesPorStatusChart } from "@/components/dashboard/ClientesPorStatusChart";
 import { ReceitaPorServidorChart } from "@/components/dashboard/ReceitaPorServidorChart";
@@ -21,8 +34,11 @@ export default function DashboardPage() {
   const { profile } = useAuth();
 
   const filtrosPagamentos = useMemo(() => ({ dataInicio: inicioDoAno() }), []);
+  const filtrosCreditos = useMemo(() => ({ tipo: "Compra", dataInicio: inicioDoAno() }), []);
   const { pagamentos, loading: loadingPagamentos } = usePagamentos(filtrosPagamentos);
-  const resumoFinanceiro = useResumoFinanceiro(pagamentos);
+  const { creditos, loading: loadingCreditos } = useCreditos(filtrosCreditos);
+  const resumoFinanceiro = useResumoFinanceiro(pagamentos, creditos);
+  const loadingFinanceiro = loadingPagamentos || loadingCreditos;
 
   return (
     <div>
@@ -77,13 +93,20 @@ export default function DashboardPage() {
           value={formatCurrency(resumoFinanceiro.receitaMes)}
           icon={Receipt}
           tone="success"
-          loading={loadingPagamentos}
+          loading={loadingFinanceiro}
         />
         <StatCard
           title="Recebido no ano"
           value={formatCurrency(resumoFinanceiro.receitaAno)}
           icon={CalendarRange}
-          loading={loadingPagamentos}
+          loading={loadingFinanceiro}
+        />
+        <StatCard
+          title="Lucro no mês"
+          value={formatCurrency(resumoFinanceiro.lucroMes)}
+          icon={resumoFinanceiro.lucroMes >= 0 ? TrendingUp : TrendingDown}
+          tone={resumoFinanceiro.lucroMes >= 0 ? "success" : "danger"}
+          loading={loadingFinanceiro}
         />
         <StatCard
           title="Créditos disponíveis"
