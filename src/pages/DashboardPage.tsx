@@ -1,0 +1,87 @@
+import { Users, UserCheck, UserX, Clock, Wallet, TrendingUp, Coins, UserPlus } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { StatCard } from "@/components/shared/StatCard";
+import { useDashboard } from "@/hooks/useDashboard";
+import { formatCurrency } from "@/utils/formatters";
+import { ClientesPorStatusChart } from "@/components/dashboard/ClientesPorStatusChart";
+import { ReceitaPorServidorChart } from "@/components/dashboard/ReceitaPorServidorChart";
+import { NovosClientesPorMesChart } from "@/components/dashboard/NovosClientesPorMesChart";
+import { ProximosVencimentos } from "@/components/dashboard/ProximosVencimentos";
+import { useAuth } from "@/contexts/AuthContext";
+
+export default function DashboardPage() {
+  const { resumo, clientesPorStatus, receitaPorServidor, novosClientesPorMes, proximosVencimentos, loading } =
+    useDashboard();
+  const { profile } = useAuth();
+
+  return (
+    <div>
+      <PageHeader
+        title={`Olá, ${profile?.nome?.split(" ")[0] ?? ""}`}
+        description="Acompanhe clientes, receitas e créditos de todos os servidores em tempo real."
+      />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          title="Total de clientes"
+          value={String(resumo?.clientes_total ?? 0)}
+          icon={Users}
+          loading={loading}
+        />
+        <StatCard
+          title="Clientes ativos"
+          value={String(resumo?.clientes_ativos ?? 0)}
+          icon={UserCheck}
+          tone="success"
+          loading={loading}
+        />
+        <StatCard
+          title="Clientes vencidos"
+          value={String(resumo?.clientes_vencidos ?? 0)}
+          icon={UserX}
+          tone="danger"
+          loading={loading}
+        />
+        <StatCard
+          title="Clientes vencendo"
+          value={String(resumo?.clientes_vencendo ?? 0)}
+          icon={Clock}
+          tone="warning"
+          loading={loading}
+        />
+        <StatCard
+          title="Receita mensal"
+          value={formatCurrency(resumo?.receita_mensal ?? 0)}
+          icon={Wallet}
+          loading={loading}
+        />
+        <StatCard
+          title="Receita total"
+          value={formatCurrency(resumo?.receita_total ?? 0)}
+          icon={TrendingUp}
+          tone="success"
+          loading={loading}
+        />
+        <StatCard
+          title="Créditos disponíveis"
+          value={String(resumo?.creditos_disponiveis ?? 0)}
+          icon={Coins}
+          loading={loading}
+        />
+        <StatCard
+          title="Novos clientes (mês)"
+          value={String(resumo?.novos_clientes ?? 0)}
+          icon={UserPlus}
+          loading={loading}
+        />
+      </div>
+
+      <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <ReceitaPorServidorChart data={receitaPorServidor} />
+        <ClientesPorStatusChart data={clientesPorStatus} />
+        <NovosClientesPorMesChart data={novosClientesPorMes} />
+        <ProximosVencimentos clientes={proximosVencimentos} />
+      </div>
+    </div>
+  );
+}
