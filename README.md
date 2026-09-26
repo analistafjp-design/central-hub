@@ -108,9 +108,10 @@ Na tela Alertas e no menu de ações de cada cliente (tela Clientes), o botão
 pronta para o telefone cadastrado do cliente, com uma mensagem pré-montada:
 saudação de acordo com o horário (Bom dia/Boa tarde/Boa noite), primeiro
 nome do cliente, se o plano vence hoje/amanhã/em quantos dias (ou já
-venceu), e a chave Pix para renovação. Você só revisa e aperta enviar — não
-há envio automático, é um atalho para não digitar a mensagem toda vez. Só
-aparece quando o cliente tem telefone cadastrado.
+venceu), a chave Pix para renovação e a assinatura da empresa (nome
+configurado em `src/lib/constants.ts`, `NOME_EMPRESA`). Você só revisa e
+aperta enviar — não há envio automático, é um atalho para não digitar a
+mensagem toda vez. Só aparece quando o cliente tem telefone cadastrado.
 
 ### Módulos com schema pronto (telas em etapas futuras)
 - **Envio 100% automático de alertas por WhatsApp** (via API oficial do
