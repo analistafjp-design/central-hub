@@ -99,12 +99,25 @@ mostra a contagem total de alertas urgentes (clientes vencidos/vencendo em
 até 3 dias + servidores com créditos baixos) e leva direto para a tela. O
 cálculo de vencimento é feito a partir da data de expiração de cada cliente
 — a função `atualizar_status_clientes()` (banco de dados) também gera
-registros na tabela `alertas` para uso futuro (ex.: histórico, envio por
-WhatsApp), mas não é necessária para os alertas visuais funcionarem.
+registros na tabela `alertas` para uso futuro (ex.: histórico), mas não é
+necessária para os alertas visuais funcionarem.
+
+### Aviso de vencimento por WhatsApp
+Na tela Alertas e no menu de ações de cada cliente (tela Clientes), o botão
+**"Avisar no WhatsApp"** abre o WhatsApp (app ou Web) já com a conversa
+pronta para o telefone cadastrado do cliente, com uma mensagem pré-montada:
+saudação de acordo com o horário (Bom dia/Boa tarde/Boa noite), primeiro
+nome do cliente, se o plano vence hoje/amanhã/em quantos dias (ou já
+venceu), e a chave Pix para renovação. Você só revisa e aperta enviar — não
+há envio automático, é um atalho para não digitar a mensagem toda vez. Só
+aparece quando o cliente tem telefone cadastrado.
 
 ### Módulos com schema pronto (telas em etapas futuras)
-- **Integração com WhatsApp** para envio dos alertas (tabela `alertas` já
-  modelada e populada automaticamente pela função de status)
+- **Envio 100% automático de alertas por WhatsApp** (via API oficial do
+  WhatsApp Business/Meta Cloud API) — a tabela `alertas` já modelada e
+  populada automaticamente pela função de status está pronta para isso; o
+  botão manual acima já cobre a necessidade imediata sem depender de conta
+  comercial verificada nem custo por mensagem
 - **Insights Inteligentes** e **Radar de Crescimento**
 
 ## Status da implementação

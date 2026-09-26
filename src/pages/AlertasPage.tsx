@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BellRing, Wallet, Phone, Coins } from "lucide-react";
+import { BellRing, Wallet, Phone, Coins, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -17,6 +17,7 @@ import { useRegistrarPagamento } from "@/hooks/useRegistrarPagamento";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 import { getVencimentoInfo } from "@/utils/status";
+import { montarLinkWhatsApp, montarMensagemLembrete } from "@/utils/whatsapp";
 import type { ClienteComServidor } from "@/types";
 import type { PagamentoFormValues } from "@/lib/validations";
 
@@ -149,10 +150,24 @@ export default function AlertasPage() {
                     )}
                   </div>
 
-                  <Button size="sm" className="shrink-0" onClick={() => setClientePagando(cliente)}>
-                    <Wallet className="h-4 w-4" />
-                    Registrar pagamento
-                  </Button>
+                  <div className="flex shrink-0 flex-wrap gap-2">
+                    {cliente.telefone && (
+                      <Button size="sm" variant="outline" className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800" asChild>
+                        <a
+                          href={montarLinkWhatsApp(cliente.telefone, montarMensagemLembrete(cliente)) ?? "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                          Avisar no WhatsApp
+                        </a>
+                      </Button>
+                    )}
+                    <Button size="sm" onClick={() => setClientePagando(cliente)}>
+                      <Wallet className="h-4 w-4" />
+                      Registrar pagamento
+                    </Button>
+                  </div>
                 </li>
               );
             })}
