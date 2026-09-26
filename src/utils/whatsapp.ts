@@ -1,4 +1,4 @@
-import { PIX_KEY_PADRAO } from "@/lib/constants";
+import { NOME_EMPRESA, PIX_KEY_PADRAO } from "@/lib/constants";
 import { onlyDigits } from "./formatters";
 import { daysUntil } from "./status";
 import type { ClienteComServidor } from "@/types";
@@ -28,12 +28,13 @@ export function fraseVencimento(dataExpiracao: string | null | undefined): strin
 }
 
 /** Monta a mensagem padrão de lembrete de vencimento, com saudação de acordo
- * com o horário, primeiro nome do cliente e a chave Pix para renovação. */
+ * com o horário, primeiro nome do cliente, a chave Pix para renovação e a
+ * assinatura da empresa no final. */
 export function montarMensagemLembrete(cliente: ClienteComServidor): string {
   const saudacao = saudacaoPorHorario();
   const nome = primeiroNome(cliente.nome);
   const frase = fraseVencimento(cliente.data_expiracao);
-  return `${saudacao}, ${nome}! Tudo bem? Seu plano de IPTV ${frase}. Deseja renovar?\n\n💳 Chave Pix: ${PIX_KEY_PADRAO}`;
+  return `${saudacao}, ${nome}! Tudo bem? Seu plano de IPTV ${frase}. Deseja renovar?\n\n💳 Chave Pix: ${PIX_KEY_PADRAO}\n\n_${NOME_EMPRESA}_`;
 }
 
 /** Monta o link wa.me com a mensagem já preenchida. Retorna null quando o

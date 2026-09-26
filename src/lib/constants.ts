@@ -25,3 +25,6 @@ export const CREDITOS_ALERTA_MINIMO = 5;
 
 /** Chave Pix exibida na mensagem de lembrete de vencimento enviada por WhatsApp. */
 export const PIX_KEY_PADRAO = "pixtecon@gmail.com";
+
+/** Nome do negócio, assinado no final da mensagem de lembrete de vencimento. */
+export const NOME_EMPRESA = "Tec-On Serviços";
