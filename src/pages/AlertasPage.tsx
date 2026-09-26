@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BellRing, Wallet, Phone } from "lucide-react";
+import { BellRing, Wallet, Phone, Coins } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -28,7 +28,7 @@ const BORDA_URGENCIA: Record<string, string> = {
 
 export default function AlertasPage() {
   const { user } = useAuth();
-  const { clientes, loading, recarregar, contagem } = useAlertas();
+  const { clientes, servidoresCreditosBaixos, loading, recarregar, contagem } = useAlertas();
   const { clientes: todosClientes } = useClientes();
   const { registrar, salvando } = useRegistrarPagamento();
   const [clientePagando, setClientePagando] = useState<ClienteComServidor | null>(null);
@@ -52,7 +52,7 @@ export default function AlertasPage() {
         description="Clientes vencidos ou prestes a vencer, do mais urgente para o menos urgente."
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard title="Vencidos" value={String(contagem.vencidos)} icon={BellRing} tone="danger" loading={loading} />
         <StatCard
           title="Vence em até 3 dias"
@@ -67,7 +67,42 @@ export default function AlertasPage() {
           icon={BellRing}
           loading={loading}
         />
+        <StatCard
+          title="Créditos baixos"
+          value={String(contagem.creditosBaixos)}
+          icon={Coins}
+          tone={contagem.creditosBaixos > 0 ? "warning" : undefined}
+          loading={loading}
+        />
       </div>
+
+      {!loading && servidoresCreditosBaixos.length > 0 && (
+        <div className="mt-6">
+          <h2 className="mb-3 text-sm font-semibold text-foreground">Servidores com poucos créditos</h2>
+          <ul className="space-y-3">
+            {servidoresCreditosBaixos.map((servidor) => (
+              <li
+                key={servidor.servidor_id}
+                className="flex flex-col gap-3 rounded-lg border border-l-4 border-l-orange-500 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground">{servidor.nome}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Restam apenas <strong className="text-orange-600">{servidor.creditos_disponiveis}</strong>{" "}
+                    {servidor.creditos_disponiveis === 1 ? "crédito" : "créditos"} — considere comprar mais.
+                  </p>
+                </div>
+                <Button size="sm" variant="outline" className="shrink-0" asChild>
+                  <Link to="/financeiro">
+                    <Coins className="h-4 w-4" />
+                    Registrar compra de créditos
+                  </Link>
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-6">
         {loading ? (

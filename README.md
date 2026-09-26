@@ -79,18 +79,28 @@ mês** e **Lucro do ano** — os gastos com créditos são descontados
 automaticamente da receita recebida. O Dashboard também mostra "Recebido no
 mês/ano" e "Lucro no mês" com os mesmos dados.
 
-### Alertas de vencimento
+Cada renovação registrada (com "Renovar assinatura do cliente" ativado)
+também debita créditos do servidor automaticamente — 1 crédito por mês
+ativado, lançado como um registro do tipo `Uso` na mesma tabela `creditos`
+das compras. O saldo disponível de cada servidor (compras − usos) aparece no
+card do servidor em Servidores, no dashboard individual do servidor e conta
+para o alerta de créditos baixos abaixo.
+
+### Alertas de vencimento e de créditos
 Tela **Alertas** listando clientes vencidos ou vencendo nos próximos 7 dias,
 do mais urgente para o menos urgente, com badge colorido (🔴 vencido, 🟠
 vence em até 3 dias, 🟡 vence em até 7 dias) e ação rápida para registrar o
 pagamento/renovação direto ali. O mesmo badge aparece na lista de Clientes e
-no widget "Próximos vencimentos" do Dashboard. Um sino no topo do app mostra
-a contagem de alertas urgentes (vencidos + vencendo em até 3 dias) e leva
-direto para a tela. Esse cálculo é feito a partir da data de expiração de
-cada cliente — a função `atualizar_status_clientes()` (banco de dados)
-também gera registros na tabela `alertas` para uso futuro (ex.: histórico,
-envio por WhatsApp), mas não é necessária para os alertas visuais
-funcionarem.
+no widget "Próximos vencimentos" do Dashboard. A mesma tela também lista
+**servidores com menos de 5 créditos disponíveis** (saldo compras − usos),
+com atalho para registrar uma nova compra em Financeiro; o mesmo aviso
+aparece como badge no card do servidor em Servidores. Um sino no topo do app
+mostra a contagem total de alertas urgentes (clientes vencidos/vencendo em
+até 3 dias + servidores com créditos baixos) e leva direto para a tela. O
+cálculo de vencimento é feito a partir da data de expiração de cada cliente
+— a função `atualizar_status_clientes()` (banco de dados) também gera
+registros na tabela `alertas` para uso futuro (ex.: histórico, envio por
+WhatsApp), mas não é necessária para os alertas visuais funcionarem.
 
 ### Módulos com schema pronto (telas em etapas futuras)
 - **Integração com WhatsApp** para envio dos alertas (tabela `alertas` já
