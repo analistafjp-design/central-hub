@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Trash2, Phone, Server, Wallet } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, Phone, Server, Wallet, MessageCircle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Users } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
+import { montarLinkWhatsApp, montarMensagemLembrete } from "@/utils/whatsapp";
 import type { ClienteComServidor } from "@/types";
 
 interface ClienteTableProps {
@@ -113,6 +114,17 @@ export function ClienteTable({
                     {onRegistrarPagamento && (
                       <DropdownMenuItem onClick={() => onRegistrarPagamento(cliente)}>
                         <Wallet className="mr-2 h-4 w-4" /> Registrar pagamento
+                      </DropdownMenuItem>
+                    )}
+                    {cliente.telefone && (
+                      <DropdownMenuItem asChild>
+                        <a
+                          href={montarLinkWhatsApp(cliente.telefone, montarMensagemLembrete(cliente)) ?? "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <MessageCircle className="mr-2 h-4 w-4" /> Avisar no WhatsApp
+                        </a>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onClick={() => onEdit(cliente)}>
